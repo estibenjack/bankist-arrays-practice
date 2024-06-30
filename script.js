@@ -62,19 +62,41 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 const displayMovements = function(movements) {
+  containerMovements.innerHTML = '';
+
   movements.forEach(function (mov, i) {
 
-    
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
       <div class="movements__row">
-        <div class="movements__type movements__type--deposit">${i + 1}</div>
+        <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
         <div class="movements__value">${mov}</div>
       </div>
-    `
-  })
-}
-displayMovements(account1.movements)
+    `;
+
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
+displayMovements(account1.movements);
+
+const createUsernames = function(accs) {
+  accs.forEach(function(acc) {
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(name => name[0])
+      .join('');
+  });
+};
+
+createUsernames(accounts);
+
+const calcDisplayBalance = function(movements) {
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance} EUR`;
+};
+calcDisplayBalance(account1.movements);
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -103,3 +125,32 @@ const movementDescriptions = movements.map((mov, i) =>
 );
 
 console.log(movementDescriptions)
+
+const deposits = movements.filter(function(mov){
+  return mov > 0;
+});
+
+console.log(deposits)
+
+const depositsFor = []
+for (const mov of movements) if (mov > 0) depositsFor.push(mov);
+console.log(depositsFor)
+
+const withdrawals = movements.filter(mov => mov < 0);
+console.log(withdrawals);
+
+// accumulator -> snowball sum
+const balance = movements.reduce((acc, cur) => acc + cur, 0);
+
+console.log(balance)
+
+// a for loop would be too cumbersome here:
+// let balance2 = 0;
+// for(const mov of movements) balance2 += mov;
+// console.log(balance2)
+
+// maximum value in movements (ie. 3000 in this example)
+
+const max = movements.reduce((acc, mov) => acc > mov ? acc : mov, movements[0]);
+
+console.log(max)
