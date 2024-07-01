@@ -61,10 +61,13 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function(movements) {
+const displayMovements = function(movements, sort = false) {
   containerMovements.innerHTML = '';
 
-  movements.forEach(function (mov, i) {
+  // we are in the middle of a chain here, so better to use .slice() to use .sort() rather than spread operator
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
 
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
@@ -205,6 +208,13 @@ btnClose.addEventListener('click', function(e) {
   inputCloseUsername.value = inputClosePin.value = '';
 })
 
+let sorted = false;
+btnSort.addEventListener('click', function(e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted); //defined sorted state outside of function and used ! not operator in function
+  sorted = !sorted;
+});
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -281,3 +291,16 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 //   .reduce((acc, mov) => acc + mov, 0);
  
 //   console.log(totalDepositsUSD);
+
+// const y = Array.from({length: 7}, () => 1);
+// console.log(y)
+
+// const z = Array.from({length: 7}, (_, i) => i + 1);
+// console.log(z)
+
+// labelBalance.addEventListener('click', function () {
+//   const movementsUI = Array.from(document.querySelectorAll('.movements__value'), el => Number(el.textContent.replace('€', '')));
+  
+//   console.log(movementsUI);
+// })
+
